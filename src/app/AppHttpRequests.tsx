@@ -3,13 +3,27 @@ import { todolistsApi } from "@/features/todolists/api/todolistsApi"
 import type { Todolist } from "@/features/todolists/api/todolistsApi.types"
 import { type ChangeEvent, type CSSProperties, useEffect, useState } from "react"
 import Checkbox from "@mui/material/Checkbox"
+import { tasksApi } from "@/features/todolists/api/tasksApi.ts"
+import { DomainTask } from "@/features/todolists/api/taskApi.types.ts"
+
+type TaskStateType = Record<string, DomainTask[]>
 
 export const AppHttpRequests = () => {
   const [todolists, setTodolists] = useState<Todolist[]>([])
-  const [tasks, setTasks] = useState<any>({})
+  const [tasks, setTasks] = useState<TaskStateType>({})
 
   useEffect(() => {
-    todolistsApi.getTodolists().then((res) => setTodolists(res.data))
+    todolistsApi.getTodolists().then((res) => {
+      const todolists = res.data
+      setTodolists(todolists)
+
+      todolists.forEach((tl) =>
+        tasksApi.getTasks(tl.id).then((res) => {
+          const tasks = res.data.items
+          setTasks((prevState) => ({ ...prevState, [tl.id]: tasks }))
+        }),
+      )
+    })
   }, [])
 
   const createTodolist = (title: string) => {
@@ -29,9 +43,20 @@ export const AppHttpRequests = () => {
     })
   }
 
-  const createTask = (todolistId: string, title: string) => {}
+  const createTask = (todolistId: string, title: string) => {
+    tasksApi.createTask(todolistId, title).then((res) => {
+      const task = res.data.data.item
+      setTasks({ ...tasks, [todolistId]: [task, ...tasks[todolistId]] })
+    })
+  }
 
-  const deleteTask = (todolistId: string, taskId: string) => {}
+  const deleteTask = (todolistId: string, taskId: string) => {
+    tasksApi.deleteTask(todolistId, taskId).then((res) => {
+      if (res.data.resultCode === 0) {
+        setTasks({ ...tasks, [todolistId]: tasks[todolistId].filter((task) => task.id !== taskId) })
+      }
+    })
+  }
 
   const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>, task: any) => {}
 
