@@ -6,7 +6,7 @@ export const tasksApi = {
   getTasks(todolistId: string) {
     return instance.get<TaskResponseType>(`/todo-lists/${todolistId}/tasks`)
   },
-  changeTask(payload: ChangeTaskPayload) {
+  updateTask(payload: ChangeTaskPayload) {
     const { model, taskId, todolistId } = payload
     return instance.put<BaseResponse<{ item: Task }>>(`/todo-lists/${todolistId}/tasks/${taskId}`, model)
   },
