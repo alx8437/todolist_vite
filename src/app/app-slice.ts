@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 export type ThemeMode = "dark" | "light"
 
-const appSlice = createSlice({
+export const appSlice = createSlice({
   name: "app",
   initialState: {
     themeMode: "dark" as ThemeMode,

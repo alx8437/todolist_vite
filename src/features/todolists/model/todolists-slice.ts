@@ -8,7 +8,7 @@ export type Todolist = {
 
 export type FilterValues = "all" | "active" | "completed"
 
-const todolistsSlice = createSlice({
+export const todolistsSlice = createSlice({
   name: "todolists",
   initialState: [] as Todolist[],
   reducers: (create) => ({
