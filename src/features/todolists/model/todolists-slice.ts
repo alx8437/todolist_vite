@@ -9,13 +9,13 @@ export type FilterValues = "all" | "active" | "completed"
 
 export const todolistsSlice = createSlice({
   name: "todolists",
-  initialState: [] as Todolist[],
+  initialState: [] as DomainTodolist[],
   selectors: {
     selectTodolists: (sliceState) => sliceState,
   },
   reducers: (create) => ({
-    setTodolistsAC: create.reducer<{ todolists: Todolist[] }>((state, action) => {
-      return action.payload.todolists
+    setTodolistsAC: create.reducer<{ todolists: Todolist[] }>((_state, action) => {
+      return action.payload.todolists.map((tl) => ({ ...tl, filter: "all" }))
     }),
     deleteTodolistAC: create.reducer<{ id: string }>((state, action) => {
       const index = state.findIndex((todolist) => todolist.id === action.payload.id)
@@ -28,7 +28,7 @@ export const todolistsSlice = createSlice({
         return { payload: { id: nanoid(), title } }
       },
       (state, action) => {
-        state.push({ ...action.payload, filter: "all" })
+        state.push({ ...action.payload, filter: "all", addedDate: "", order: 0 })
       },
     ),
     changeTodolistTitleAC: create.reducer<{ id: string; title: string }>((state, action) => {

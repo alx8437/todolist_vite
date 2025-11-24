@@ -8,10 +8,12 @@ import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts"
 
 export const Todolists = () => {
   const todolists = useAppSelector(selectTodolists)
-  const dispatch = useAppDispatch
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     todolistsApi.getTodolists().then((res) => {
+      const todolists = res.data
+      console.log(todolists)
       dispatch(setTodolistsAC({ todolists: res.data }))
     })
   }, [])
