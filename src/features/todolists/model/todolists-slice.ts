@@ -25,10 +25,17 @@ export const todolistsSlice = createSlice({
     }),
     createTodolistAC: create.preparedReducer(
       (title: string) => {
-        return { payload: { id: nanoid(), title } }
+        const newTodolist: DomainTodolist = {
+          id: nanoid(),
+          title,
+          addedDate: "",
+          filter: "all",
+          order: 0,
+        }
+        return { payload: newTodolist }
       },
       (state, action) => {
-        state.push({ ...action.payload, filter: "all", addedDate: "", order: 0 })
+        state.push(action.payload)
       },
     ),
     changeTodolistTitleAC: create.reducer<{ id: string; title: string }>((state, action) => {
