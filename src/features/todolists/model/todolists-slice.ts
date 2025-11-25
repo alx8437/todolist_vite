@@ -1,5 +1,6 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit"
 import { Todolist } from "@/features/todolists/api/todolistsApi.types.ts"
+import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts"
 
 export type DomainTodolist = Todolist & {
   filter: FilterValues
@@ -54,6 +55,18 @@ export const todolistsSlice = createSlice({
     }),
   }),
 })
+
+export const fetchTodolistsTC = createAsyncThunk(
+  `${todolistsSlice.name}/fetchTodolists`,
+  async (_arg, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await todolistsApi.getTodolists()
+      dispatch(setTodolistsAC({ todolists: res.data }))
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  },
+)
 
 export const todolistsReducer = todolistsSlice.reducer
 export const { createTodolistAC, changeTodolistTitleAC, changeTodolistFilterAC, deleteTodolistAC, setTodolistsAC } =
