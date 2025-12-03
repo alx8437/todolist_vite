@@ -4,10 +4,10 @@ import type { Todolist } from "@/features/todolists/api/todolistsApi.types"
 import { type ChangeEvent, type CSSProperties, useEffect, useState } from "react"
 import Checkbox from "@mui/material/Checkbox"
 import { tasksApi } from "@/features/todolists/api/tasksApi.ts"
-import { UpdateTaskModel, Task } from "@/features/todolists/api/taskApi.types.ts"
+import { DomainTask, UpdateTaskModel } from "@/features/todolists/api/taskApi.types.ts"
 import { TaskStatus } from "@/common/enums/enums.ts"
 
-type TaskStateType = Record<string, Task[]>
+type TaskStateType = Record<string, DomainTask[]>
 
 export const AppHttpRequests = () => {
   const [todolists, setTodolists] = useState<Todolist[]>([])
@@ -60,7 +60,7 @@ export const AppHttpRequests = () => {
     })
   }
 
-  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>, task: Task) => {
+  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>, task: DomainTask) => {
     const todolistId = task.todoListId
 
     const model: UpdateTaskModel = {
@@ -80,7 +80,7 @@ export const AppHttpRequests = () => {
     })
   }
 
-  const changeTaskTitle = (task: Task, title: string) => {
+  const changeTaskTitle = (task: DomainTask, title: string) => {
     const todolistId = task.todoListId
 
     const model: UpdateTaskModel = {

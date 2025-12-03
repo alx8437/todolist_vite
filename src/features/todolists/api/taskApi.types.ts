@@ -1,6 +1,6 @@
 import { TaskPriority, TaskStatus } from "@/common/enums/enums.ts"
 
-export type Task = {
+export type DomainTask = {
   description: string | null
   title: string
   status: TaskStatus
@@ -14,12 +14,12 @@ export type Task = {
 }
 
 export type TaskResponseType = {
-  items: Array<Task>
+  items: Array<DomainTask>
   totalCount: number
   error: string | null
 }
 
-export type UpdateTaskModel = Omit<Task, "id" | "todoListId" | "order" | "addedDate">
+export type UpdateTaskModel = Omit<DomainTask, "id" | "todoListId" | "order" | "addedDate">
 
 export type ChangeTaskPayload = {
   todolistId: string
