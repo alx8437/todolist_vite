@@ -19,7 +19,7 @@ export const AppHttpRequests = () => {
       setTodolists(todolists)
 
       todolists.forEach((todolist) =>
-        tasksApi.getTasks(todolist.id).then((res) => {
+        tasksApi.getTasks({ todolistId: todolist.id }).then((res) => {
           const tasks = res.data.items
           setTasks((prevState) => ({ ...prevState, [todolist.id]: tasks }))
         }),
@@ -46,14 +46,14 @@ export const AppHttpRequests = () => {
   }
 
   const createTask = (todolistId: string, title: string) => {
-    tasksApi.createTask(todolistId, title).then((res) => {
+    tasksApi.createTask({ todolistId, title }).then((res) => {
       const task = res.data.data.item
       setTasks({ ...tasks, [todolistId]: [task, ...tasks[todolistId]] })
     })
   }
 
   const deleteTask = (todolistId: string, taskId: string) => {
-    tasksApi.deleteTask(todolistId, taskId).then((res) => {
+    tasksApi.deleteTask({ todolistId, taskId }).then((res) => {
       if (res.data.resultCode === 0) {
         setTasks({ ...tasks, [todolistId]: tasks[todolistId].filter((task) => task.id !== taskId) })
       }

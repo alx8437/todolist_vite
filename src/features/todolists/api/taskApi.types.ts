@@ -26,3 +26,13 @@ export type ChangeTaskPayload = {
   taskId: string
   model: UpdateTaskModel
 }
+
+export type CreateTaskPayload = {
+  todolistId: string
+  title: string
+}
+
+export type DeleteTaskPayload = {
+  todolistId: string
+  taskId: string
+}
