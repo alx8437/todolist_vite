@@ -66,13 +66,9 @@ export const tasksSlice = createAppSlice({
         },
       },
     ),
-    changeTaskStatusAC: create.reducer<{ todolistId: string; taskId: string; isDone: boolean }>((state, action) => {
-      const tasks = state[action.payload.todolistId]
-      const index = tasks.findIndex((task) => task.id === action.payload.taskId)
 
-      if (index !== -1) {
-        tasks[index].status = action.payload.isDone ? TaskStatus.Completed : TaskStatus.New
-      }
+    changeTaskStatus: create.asyncThunk((task: DomainTask, { rejectWithValue }) => {}, {
+      fulfilled: (state, action) => {},
     }),
     changeTaskTitleAC: create.reducer<{ todolistId: string; taskId: string; title: string }>((state, action) => {
       const tasks = state[action.payload.todolistId]
@@ -97,7 +93,7 @@ export const tasksSlice = createAppSlice({
 })
 
 export const tasksReducer = tasksSlice.reducer
-export const { changeTaskStatusAC, changeTaskTitleAC, createTask, deleteTask, fetchTasks } = tasksSlice.actions
+export const { changeTaskStatus, changeTaskTitleAC, createTask, deleteTask, fetchTasks } = tasksSlice.actions
 export const { selectTasks } = tasksSlice.selectors
 
 export type TasksState = Record<string, DomainTask[]>
