@@ -1,4 +1,4 @@
-import { createTodolistTC, deleteTodolistTC } from "@/features/todolists/model/todolists-slice.ts"
+import { createTodolist, deleteTodolistTC } from "@/features/todolists/model/todolists-slice.ts"
 import { createAppSlice } from "@/common/utils"
 import { tasksApi } from "@/features/todolists/api/tasksApi.ts"
 import {
@@ -120,7 +120,7 @@ export const tasksSlice = createAppSlice({
     }),
   }),
   extraReducers: (builder) => {
-    builder.addCase(createTodolistTC.fulfilled, (state, action) => {
+    builder.addCase(createTodolist.fulfilled, (state, action) => {
       state[action.payload.todolist.id] = []
     })
     builder.addCase(deleteTodolistTC.fulfilled, (state, action) => {
