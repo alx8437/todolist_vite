@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 import { Todolist } from "@/features/todolists/api/todolistsApi.types.ts"
 import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts"
 import { createAppSlice } from "@/common/utils"
+import { changeStatusAC } from "@/app/app-slice.ts"
 
 export type DomainTodolist = Todolist & {
   filter: FilterValues
@@ -26,12 +27,15 @@ export const todolistsSlice = createAppSlice({
     }),
     // thunks
     fetchTodolists: create.asyncThunk(
-      async (_arg, thunkAPI) => {
+      async (_arg, { rejectWithValue, dispatch }) => {
         try {
+          dispatch(changeStatusAC({ status: "loading" }))
           const res = await todolistsApi.getTodolists()
+          dispatch(changeStatusAC({ status: "succeeded" }))
           return { todolists: res.data }
         } catch (error) {
-          return thunkAPI.rejectWithValue(error)
+          dispatch(changeStatusAC({ status: "failed" }))
+          return rejectWithValue(error)
         }
       },
       {

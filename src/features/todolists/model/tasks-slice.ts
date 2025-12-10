@@ -7,6 +7,7 @@ import {
   DomainTask,
   UpdateTaskModel,
 } from "@/features/todolists/api/taskApi.types.ts"
+import { changeStatusAC } from "@/app/app-slice.ts"
 
 export const tasksSlice = createAppSlice({
   name: "tasks",
@@ -54,13 +55,16 @@ export const tasksSlice = createAppSlice({
       },
     ),
     createTask: create.asyncThunk(
-      async ({ title, todolistId }: CreateTaskPayload, { rejectWithValue }) => {
+      async ({ title, todolistId }: CreateTaskPayload, { rejectWithValue, dispatch }) => {
         try {
+          dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.createTask({ todolistId, title })
+          dispatch(changeStatusAC({ status: "succeeded" }))
           return {
             task: res.data.data.item,
           }
         } catch (error) {
+          dispatch(changeStatusAC({ status: "failed" }))
           return rejectWithValue(error)
         }
       },
