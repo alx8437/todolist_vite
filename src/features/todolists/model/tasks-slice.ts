@@ -15,11 +15,14 @@ export const tasksSlice = createAppSlice({
   initialState: {} as TasksState,
   reducers: (create) => ({
     fetchTasks: create.asyncThunk(
-      async (todolistId: string, { rejectWithValue }) => {
+      async (todolistId: string, { rejectWithValue, dispatch }) => {
         try {
+          dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.getTasks({ todolistId })
+          dispatch(changeStatusAC({ status: "succeeded" }))
           return { tasks: res.data.items, todolistId }
         } catch (error) {
+          dispatch(changeStatusAC({ status: "failed" }))
           return rejectWithValue(error)
         }
       },
@@ -30,15 +33,18 @@ export const tasksSlice = createAppSlice({
       },
     ),
     deleteTask: create.asyncThunk(
-      async (arg: DeleteTaskPayload, { rejectWithValue }) => {
+      async (arg: DeleteTaskPayload, { rejectWithValue, dispatch }) => {
         try {
+          dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.deleteTask(arg)
+          dispatch(changeStatusAC({ status: "succeeded" }))
           return {
             resultCode: res.data.resultCode,
             todolistId: arg.todolistId,
             taskId: arg.taskId,
           }
         } catch (error) {
+          dispatch(changeStatusAC({ status: "failed" }))
           return rejectWithValue(error)
         }
       },
@@ -79,7 +85,7 @@ export const tasksSlice = createAppSlice({
     updateTask: create.asyncThunk(
       async (
         payload: { todolistId: string; taskId: string; model: Partial<DomainTask> },
-        { rejectWithValue, getState },
+        { rejectWithValue, getState, dispatch },
       ) => {
         const allTodolistTasks = (getState() as RootState).tasks[payload.todolistId]
 
@@ -100,15 +106,18 @@ export const tasksSlice = createAppSlice({
         }
 
         try {
+          dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.updateTask({
             todolistId: task.todoListId,
             taskId: task.id,
             model,
           })
+          dispatch(changeStatusAC({ status: "succeeded" }))
           return {
             updatedTask: res.data.data.item,
           }
         } catch (error) {
+          dispatch(changeStatusAC({ status: "failed" }))
           return rejectWithValue(error)
         }
       },
