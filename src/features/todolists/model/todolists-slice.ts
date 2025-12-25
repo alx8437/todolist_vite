@@ -86,7 +86,8 @@ export const todolistsSlice = createAppSlice({
             dispatch(setErrorAC({ error }))
             return rejectWithValue(error)
           }
-        } catch (error) {
+        } catch (error: any) {
+          dispatch(setErrorAC({ error: error.response?.data?.message || error.message }))
           dispatch(changeStatusAC({ status: "failed" }))
           return rejectWithValue(error)
         }
