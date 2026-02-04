@@ -41,7 +41,7 @@ export const todolistsSlice = createAppSlice({
           dispatch(changeStatusAC({ status: "succeeded" }))
           return { todolists: res.data }
         } catch (error) {
-          dispatch(changeStatusAC({ status: "failed" }))
+          handleCatchError(dispatch, error)
           return rejectWithValue(error)
         }
       },
@@ -59,7 +59,7 @@ export const todolistsSlice = createAppSlice({
           dispatch(changeStatusAC({ status: "succeeded" }))
           return { ...arg }
         } catch (error) {
-          dispatch(changeStatusAC({ status: "failed" }))
+          handleCatchError(dispatch, error)
           return rejectWithValue(error)
         }
       },
@@ -104,7 +104,7 @@ export const todolistsSlice = createAppSlice({
           dispatch(changeStatusAC({ status: "succeeded" }))
           return { id }
         } catch (error) {
-          dispatch(changeStatusAC({ status: "failed" }))
+          handleCatchError(dispatch, error)
           dispatch(changeTodolistEntityStatusAC({ id, entityStatus: "failed" }))
           return rejectWithValue(error)
         }

@@ -23,7 +23,7 @@ export const tasksSlice = createAppSlice({
           dispatch(changeStatusAC({ status: "succeeded" }))
           return { tasks: res.data.items, todolistId }
         } catch (error) {
-          dispatch(changeStatusAC({ status: "failed" }))
+          handleCatchError(dispatch, error)
           return rejectWithValue(error)
         }
       },
@@ -45,7 +45,7 @@ export const tasksSlice = createAppSlice({
             taskId: arg.taskId,
           }
         } catch (error) {
-          dispatch(changeStatusAC({ status: "failed" }))
+          handleCatchError(dispatch, error)
           return rejectWithValue(error)
         }
       },
@@ -123,7 +123,7 @@ export const tasksSlice = createAppSlice({
             updatedTask: res.data.data.item,
           }
         } catch (error) {
-          dispatch(changeStatusAC({ status: "failed" }))
+          handleCatchError(dispatch, error)
           return rejectWithValue(error)
         }
       },
