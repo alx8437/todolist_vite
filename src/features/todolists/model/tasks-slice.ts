@@ -38,11 +38,15 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.deleteTask(arg)
-          dispatch(changeStatusAC({ status: "succeeded" }))
-          return {
-            resultCode: res.data.resultCode,
-            todolistId: arg.todolistId,
-            taskId: arg.taskId,
+          if (res.data.resultCode === ResultCode.Success) {
+            dispatch(changeStatusAC({ status: "succeeded" }))
+            return {
+              todolistId: arg.todolistId,
+              taskId: arg.taskId,
+            }
+          } else {
+            handleAppError(dispatch, res.data)
+            return rejectWithValue(null)
           }
         } catch (error) {
           handleCatchError(dispatch, error)
@@ -51,13 +55,11 @@ export const tasksSlice = createAppSlice({
       },
       {
         fulfilled: (state, action) => {
-          if (action.payload.resultCode === 0) {
-            const tasks = state[action.payload.todolistId]
-            const index = tasks.findIndex((task) => task.id === action.payload.taskId)
+          const tasks = state[action.payload.todolistId]
+          const index = tasks.findIndex((task) => task.id === action.payload.taskId)
 
-            if (index !== -1) {
-              tasks.splice(index, 1)
-            }
+          if (index !== -1) {
+            tasks.splice(index, 1)
           }
         },
       },
@@ -118,9 +120,14 @@ export const tasksSlice = createAppSlice({
             taskId: task.id,
             model,
           })
-          dispatch(changeStatusAC({ status: "succeeded" }))
-          return {
-            updatedTask: res.data.data.item,
+          if (res.data.resultCode === ResultCode.Success) {
+            dispatch(changeStatusAC({ status: "succeeded" }))
+            return {
+              updatedTask: res.data.data.item,
+            }
+          } else {
+            handleAppError(dispatch, res.data)
+            return rejectWithValue(null)
           }
         } catch (error) {
           handleCatchError(dispatch, error)
