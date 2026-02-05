@@ -55,9 +55,13 @@ export const todolistsSlice = createAppSlice({
       async (arg: { id: string; title: string }, { rejectWithValue, dispatch }) => {
         try {
           dispatch(changeStatusAC({ status: "loading" }))
-          await todolistsApi.changeTodolistTitle({ ...arg })
-          dispatch(changeStatusAC({ status: "succeeded" }))
-          return { ...arg }
+          const res = await todolistsApi.changeTodolistTitle({ ...arg })
+          if (res.data.resultCode === ResultCode.Success) {
+            dispatch(changeStatusAC({ status: "succeeded" }))
+            return { ...arg }
+          } else {
+            return rejectWithValue(null)
+          }
         } catch (error) {
           handleCatchError(dispatch, error)
           return rejectWithValue(error)
@@ -100,9 +104,14 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           dispatch(changeTodolistEntityStatusAC({ id, entityStatus: "loading" }))
-          await todolistsApi.deleteTodolist(id)
-          dispatch(changeStatusAC({ status: "succeeded" }))
-          return { id }
+          const res = await todolistsApi.deleteTodolist(id)
+          if (res.data.resultCode === ResultCode.Success) {
+            dispatch(changeStatusAC({ status: "succeeded" }))
+            return { id }
+          } else {
+            handleAppError(dispatch, res.data)
+            return rejectWithValue(null)
+          }
         } catch (error) {
           handleCatchError(dispatch, error)
           dispatch(changeTodolistEntityStatusAC({ id, entityStatus: "failed" }))
