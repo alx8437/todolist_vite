@@ -15,16 +15,11 @@ import { InputAdornment, InputLabel, OutlinedInput } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 import { useState } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
-
-type LoginInputs = {
-  email: string
-  password: string
-  rememberMe: boolean
-}
+import { zodResolver } from "@hookform/resolvers/zod"
+import { LoginInputs, loginSchema } from "@/features/auth/lib/schemas"
 
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
   const [showPassword, setShowPassword] = useState(true)
 
@@ -35,7 +30,10 @@ export const Login = () => {
     formState: { errors },
     reset,
     control,
-  } = useForm<LoginInputs>({ defaultValues: { email: "", password: "", rememberMe: false } })
+  } = useForm<LoginInputs>({
+    defaultValues: { email: "", password: "", rememberMe: false },
+    resolver: zodResolver(loginSchema),
+  })
 
   const onSubmit: SubmitHandler<LoginInputs> = (data: LoginInputs) => {
     console.log(data)
@@ -67,24 +65,14 @@ export const Login = () => {
         </FormLabel>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
-            <TextField
-              label="Email"
-              margin="normal"
-              {...register("email", {
-                pattern: {
-                  value: emailRegex,
-                  message: "Incorrect email address",
-                },
-                required: { value: true, message: "email is required" },
-              })}
-              error={!!errors.email}
-            />
+            <TextField label="Email" margin="normal" {...register("email")} error={!!errors.email} />
             {!!errors.email && <span className={styles.errorMessage}>{errors.email.message}</span>}
             <FormControl sx={{ marginTop: "10px" }}>
               <InputLabel htmlFor="password-input">Password</InputLabel>
               <OutlinedInput
                 id="password-input"
                 label={"Password"}
+                error={!!errors.password}
                 type={showPassword ? "text" : "password"}
                 endAdornment={
                   <InputAdornment position="end">
