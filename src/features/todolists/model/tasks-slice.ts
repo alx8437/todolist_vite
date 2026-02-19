@@ -5,6 +5,7 @@ import {
   CreateTaskPayload,
   DeleteTaskPayload,
   DomainTask,
+  domainTaskSchema,
   UpdateTaskModel,
 } from "@/features/todolists/api/taskApi.types.ts"
 import { changeStatusAC } from "@/app/app-slice.ts"
@@ -20,6 +21,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.getTasks({ todolistId })
+          domainTaskSchema.array().parse(res.data.items)
           dispatch(changeStatusAC({ status: "succeeded" }))
           return { tasks: res.data.items, todolistId }
         } catch (error) {
