@@ -1,3 +1,11 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+}
+
 .title {
     text-align: center;
     font-size: 250px;
@@ -9,4 +17,9 @@
     font-size: 50px;
     margin: 0;
     text-transform: uppercase;
+    margin-bottom: 40px;
+}
+
+.buttonContainer {
+    margin-top: 20px;
 }
