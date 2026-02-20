@@ -21,11 +21,10 @@ import { LoginInputs, loginSchema } from "@/features/auth/lib/schemas"
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
 
-  const [showPassword, setShowPassword] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
 
   const theme = getTheme(themeMode)
   const {
-    register,
     handleSubmit,
     formState: { errors },
     reset,
@@ -65,29 +64,39 @@ export const Login = () => {
         </FormLabel>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
-            <TextField label="Email" margin="normal" {...register("email")} error={!!errors.email} />
+            <Controller
+              control={control}
+              render={({ field }) => <TextField {...field} label="Email" margin="normal" error={!!errors.email} />}
+              name={"email"}
+            />
             {!!errors.email && <span className={styles.errorMessage}>{errors.email.message}</span>}
-            <FormControl sx={{ marginTop: "10px" }}>
-              <InputLabel htmlFor="password-input">Password</InputLabel>
-              <OutlinedInput
-                id="password-input"
-                label={"Password"}
-                error={!!errors.password}
-                type={showPassword ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                {...register("password", {
-                  required: { value: true, message: "Password is required" },
-                  minLength: { value: 8, message: "Minimum 8 symbols" },
-                })}
-              />
-              {!!errors.password && <span className={styles.errorMessage}>{errors.password.message}</span>}
-            </FormControl>
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <FormControl sx={{ marginTop: "10px" }} error={!!errors.password} variant="outlined">
+                  <InputLabel htmlFor="password-input">Password</InputLabel>
+                  <OutlinedInput
+                    id="password-input"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    {...field}
+                  />
+                </FormControl>
+              )}
+            />
+            {!!errors.password && <span className={styles.errorMessage}>{errors.password.message}</span>}
             <FormControlLabel
               label="Remember me"
               control={
