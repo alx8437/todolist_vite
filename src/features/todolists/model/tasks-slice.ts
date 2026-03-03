@@ -5,12 +5,14 @@ import {
   CreateTaskPayload,
   DeleteTaskPayload,
   DomainTask,
-  domainTaskSchema,
+  getTaskSchema,
+  taskOperationResponseSchema,
   UpdateTaskModel,
 } from "@/features/todolists/api/taskApi.types.ts"
 import { changeStatusAC } from "@/app/app-slice.ts"
 import { RootState } from "@/app/store.ts"
 import { ResultCode } from "@/common/enums/enums.ts"
+import { defaultResponseSchema } from "@/common/types"
 
 export const tasksSlice = createAppSlice({
   name: "tasks",
@@ -21,7 +23,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.getTasks({ todolistId })
-          domainTaskSchema.array().parse(res.data.items)
+          getTaskSchema.parse(res.data)
           dispatch(changeStatusAC({ status: "succeeded" }))
           return { tasks: res.data.items, todolistId }
         } catch (error) {
@@ -40,6 +42,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.deleteTask(arg)
+          defaultResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(changeStatusAC({ status: "succeeded" }))
             return {
@@ -71,6 +74,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await tasksApi.createTask({ todolistId, title })
+          taskOperationResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(changeStatusAC({ status: "succeeded" }))
             return {
@@ -122,6 +126,7 @@ export const tasksSlice = createAppSlice({
             taskId: task.id,
             model,
           })
+          taskOperationResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(changeStatusAC({ status: "succeeded" }))
             return {

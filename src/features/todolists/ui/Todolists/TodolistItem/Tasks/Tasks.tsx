@@ -4,7 +4,7 @@ import List from "@mui/material/List"
 import { fetchTasks, selectTasks } from "@/features/todolists/model/tasks-slice.ts"
 import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts"
 import { useEffect } from "react"
-import { TaskStatus } from "@/common/enums/enums.ts"
+import { TaskStatus } from "@/common/enums"
 
 type Props = {
   todolist: DomainTodolist

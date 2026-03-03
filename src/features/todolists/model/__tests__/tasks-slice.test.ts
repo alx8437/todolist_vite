@@ -1,7 +1,7 @@
 import { beforeEach, expect, test } from "vitest"
 import { createTask, deleteTask, tasksReducer, type TasksState, updateTask } from "../tasks-slice.ts"
 import { createTodolist, deleteTodolist, DomainTodolist } from "../todolists-slice.ts"
-import { TaskPriority, TaskStatus } from "@/common/enums/enums.ts"
+import { TaskPriority, TaskStatus } from "@/common/enums"
 import { DomainTask } from "@/features/todolists/api/taskApi.types.ts"
 
 let startState: TasksState = {}
@@ -33,7 +33,7 @@ beforeEach(() => {
 test("correct task should be deleted", () => {
   const endState = tasksReducer(
     startState,
-    deleteTask.fulfilled({ todolistId: "todolistId2", taskId: "2", resultCode: 0 }, "requestId", {
+    deleteTask.fulfilled({ todolistId: "todolistId2", taskId: "2" }, "requestId", {
       taskId: "2",
       todolistId: "todolistId2",
     }),
@@ -119,6 +119,7 @@ test("array should be created for new todolist", () => {
     id: "todolistId3",
     filter: "all",
     title: "New todolist",
+    entityStatus: "idle",
   }
   const endState = tasksReducer(
     startState,

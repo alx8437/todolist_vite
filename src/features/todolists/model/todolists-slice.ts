@@ -1,8 +1,8 @@
-import { Todolist } from "@/features/todolists/api/todolistsApi.types.ts"
+import { createTodolistResponseSchema, Todolist, todolistSchema } from "@/features/todolists/api/todolistsApi.types.ts"
 import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts"
 import { createAppSlice, handleAppError, handleCatchError } from "@/common/utils"
 import { changeStatusAC } from "@/app/app-slice.ts"
-import { RequestStatus } from "@/common/types"
+import { defaultResponseSchema, RequestStatus } from "@/common/types"
 import { ResultCode } from "@/common/enums/enums.ts"
 
 export type DomainTodolist = Todolist & {
@@ -38,6 +38,7 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await todolistsApi.getTodolists()
+          todolistSchema.array().parse(res.data)
           dispatch(changeStatusAC({ status: "succeeded" }))
           return { todolists: res.data }
         } catch (error) {
@@ -56,6 +57,7 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await todolistsApi.changeTodolistTitle({ ...arg })
+          defaultResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(changeStatusAC({ status: "succeeded" }))
             return { ...arg }
@@ -81,6 +83,7 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(changeStatusAC({ status: "loading" }))
           const res = await todolistsApi.createTodolist(title)
+          createTodolistResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(changeStatusAC({ status: "succeeded" }))
             return { todolist: res.data.data.item }
@@ -105,6 +108,7 @@ export const todolistsSlice = createAppSlice({
           dispatch(changeStatusAC({ status: "loading" }))
           dispatch(changeTodolistEntityStatusAC({ id, entityStatus: "loading" }))
           const res = await todolistsApi.deleteTodolist(id)
+          defaultResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
             dispatch(changeStatusAC({ status: "succeeded" }))
             return { id }

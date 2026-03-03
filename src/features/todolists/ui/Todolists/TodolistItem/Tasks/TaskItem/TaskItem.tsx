@@ -8,8 +8,8 @@ import ListItem from "@mui/material/ListItem"
 import type { ChangeEvent } from "react"
 import { getListItemSx } from "./TaskItem.styles"
 import { DomainTask } from "@/features/todolists/api/taskApi.types.ts"
-import { TaskStatus } from "@/common/enums/enums.ts"
 import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts"
+import { TaskStatus } from "@/common/enums"
 
 type Props = {
   task: DomainTask

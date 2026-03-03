@@ -13,7 +13,7 @@ export const handleCatchError = (dispatch: Dispatch, error: unknown) => {
 
     case error instanceof z.ZodError:
       errorMessage = "Zod error validation, look at the console"
-      console.log(error.issues)
+      console.table(error.issues)
       break
 
     case error instanceof Error:
